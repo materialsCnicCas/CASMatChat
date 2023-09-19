@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS}|%-5level|%thread|%X{ip}|%X{uri}|%X{platform}|%X{channel}|%X{clientVersion}|%X{deviceCode}|%X{model}|%X{osVersion}|%X{userToken}|%X{token}|%X{serialNumber}|%logger{36}|%msg%n" />
+    <property name="log.path" value="/export/data/logs/info" />
+    <springProperty scope="context" name="logLevel" source="logging.level.root"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/radar.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/radar.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="infoAsync" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>3000</discardingThreshold>
+        <queueSize>10000</queueSize>
+        <appender-ref ref="rollingFile" />
+    </appender>
+
+    <!-- project default level -->
+    <logger name="com.ncit" level="debug" />
+    <logger name="com.alibaba.nacos" level="error" />
+    <logger name="org.apache.ibatis" level="${logLevel}" />
+    <logger name="org.apache.commons" level="${logLevel}" />
+    <logger name="java.sql" level="info" />
+    <logger name="org.springframework" level="${logLevel}" />
+    <logger name="com.fasterxml" level="info"/>
+    <logger name="org.apache.http" level="${logLevel}" /><!--增加http日志-->
+    <logger name="org.apache.commons.httpclient" level="${logLevel}" /><!--增加http日志-->
+    <logger name="httpclient.wire.header" level="${logLevel}" /><!--增加http日志-->
+
+    <!--log4jdbc -->
+    <logger name="jdbc.sqltiming" level="info" />
+    <logger name="feign.Logger" level="info" />
+
+    <root level="${logLevel}">
+        <appender-ref ref="console" />
+        <appender-ref ref="infoAsync" />
+    </root>
+
+</configuration>

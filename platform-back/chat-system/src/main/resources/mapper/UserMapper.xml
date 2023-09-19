@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.materials.gpt.mapper.UserMapper">
+	<resultMap id="BaseResultMap"
+		type="com.materials.gpt.entity.User">
+		<id column="USER_ID" jdbcType="BIGINT" property="userId" />
+		<result column="USERNAME" jdbcType="VARCHAR"
+			property="username" />
+		<result column="PASSWORD" jdbcType="VARCHAR"
+			property="password" />
+		<result column="EMAIL" jdbcType="VARCHAR" property="email" />
+		<result column="ACCOUNT_NON_EXPIRED" jdbcType="TINYINT"
+			property="accountNonExpired" />
+		<result column="ACCOUNT_NON_LOCKED" jdbcType="TINYINT"
+			property="accountNonLocked" />
+		<result column="CREDENTIALS_NON_EXPIRED" jdbcType="TINYINT"
+			property="credentialsNonExpired" />
+		<result column="ENABLED" jdbcType="TINYINT" property="enabled" />
+		<result column="CREATED_BY" jdbcType="BIGINT"
+			property="createdBy" />
+		<result column="CREATED_DATE" jdbcType="TIMESTAMP"
+			property="createdDate" />
+		<result column="LAST_UPDATED_BY" jdbcType="BIGINT"
+			property="lastUpdatedBy" />
+		<result column="LAST_UPDATED_DATE" jdbcType="TIMESTAMP"
+			property="lastUpdatedDate" />
+		<result column="LAST_LOGIN" jdbcType="TIMESTAMP"
+			property="lastLogin" />
+		<result column="LAST_PASSWORD_RESET_DATE" jdbcType="TIMESTAMP"
+			property="lastPasswordResetDate" />
+		<result column="is_auth" jdbcType="TINYINT"
+				property="isAuth" />
+		<collection property="roles" javaType="list"
+			ofType="com.materials.gpt.entity.Role"
+			select="findRolesByUserId" column="USER_ID">
+		</collection>
+	</resultMap>
+	<resultMap id="RoleMap"
+		type="com.materials.gpt.entity.Role">
+		<id column="ROLE_ID" jdbcType="BIGINT" property="roleId" />
+		<result column="ROLE_NAME" jdbcType="VARCHAR"
+			property="roleName" />
+		<result column="ROLE_DESC" jdbcType="VARCHAR"
+			property="roleDesc" />
+		<result column="ENABLED" jdbcType="TINYINT" property="enabled" />
+		<result column="CREATED_BY" jdbcType="BIGINT"
+			property="createdBy" />
+		<result column="CREATED_DATE" jdbcType="TIMESTAMP"
+			property="createdDate" />
+		<result column="LAST_UPDATED_BY" jdbcType="BIGINT"
+			property="lastUpdatedBy" />
+		<result column="LAST_UPDATED_DATE" jdbcType="TIMESTAMP"
+			property="lastUpdatedDate" />
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		sys_users
+		where USER_ID = #{userId,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert"
+		parameterType="com.materials.gpt.entity.User">
+		<!-- <selectKey keyProperty="userId" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID() </selectKey> -->
+		insert into sys_users (USER_ID,USERNAME, PASSWORD, EMAIL)
+		values
+		(#{userId,jdbcType=BIGINT},#{username,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateByPrimaryKey"
+		parameterType="com.materials.gpt.entity.User">
+		update sys_users
+		set USERNAME =
+		#{username,jdbcType=VARCHAR},
+		PASSWORD = #{password,jdbcType=VARCHAR},
+		EMAIL = #{email,jdbcType=VARCHAR},
+		ACCOUNT_NON_EXPIRED =
+		#{accountNonExpired,jdbcType=TINYINT},
+		ACCOUNT_NON_LOCKED =
+		#{accountNonLocked,jdbcType=TINYINT},
+		CREDENTIALS_NON_EXPIRED =
+		#{credentialsNonExpired,jdbcType=TINYINT},
+		ENABLED =
+		#{enabled,jdbcType=TINYINT},
+		CREATED_BY = #{createdBy,jdbcType=BIGINT},
+		CREATED_DATE = #{createdDate,jdbcType=TIMESTAMP},
+		LAST_UPDATED_BY =
+		#{lastUpdatedBy,jdbcType=BIGINT},
+		LAST_UPDATED_DATE =
+		#{lastUpdatedDate,jdbcType=TIMESTAMP},
+		LAST_LOGIN =
+		#{lastLogin,jdbcType=TIMESTAMP},
+		is_auth =
+		#{isAuth,jdbcType=TINYINT},
+		LAST_PASSWORD_RESET_DATE =
+		#{lastPasswordResetDate,jdbcType=TIMESTAMP}
+		where USER_ID =
+		#{userId,jdbcType=BIGINT}
+	</update>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select USER_ID, USERNAME, PASSWORD, EMAIL,
+		ACCOUNT_NON_EXPIRED,
+		ACCOUNT_NON_LOCKED,
+		CREDENTIALS_NON_EXPIRED,
+		ENABLED, CREATED_BY, CREATED_DATE, LAST_UPDATED_BY,
+		LAST_UPDATED_DATE,
+		LAST_LOGIN, LAST_PASSWORD_RESET_DATE,is_auth
+		from sys_users
+		where USER_ID =
+		#{userId,jdbcType=BIGINT}
+		and ENABLED = 1
+		limit 1
+	</select>
+	<select id="findByUsername" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select USER_ID, USERNAME, PASSWORD, EMAIL,
+		ACCOUNT_NON_EXPIRED,
+		ACCOUNT_NON_LOCKED,
+		CREDENTIALS_NON_EXPIRED,
+		ENABLED, CREATED_BY, CREATED_DATE, LAST_UPDATED_BY,
+		LAST_UPDATED_DATE,
+		LAST_LOGIN, LAST_PASSWORD_RESET_DATE
+		from sys_users
+		where USERNAME =
+		#{username,jdbcType=VARCHAR}
+		and ENABLED = 1
+		limit 1
+	</select>
+	<select id="findByEmail" parameterType="java.lang.String"
+			resultMap="BaseResultMap">
+		select USER_ID, USERNAME, PASSWORD, EMAIL,
+			   ACCOUNT_NON_EXPIRED,
+			   ACCOUNT_NON_LOCKED,
+			   CREDENTIALS_NON_EXPIRED,
+			   ENABLED, CREATED_BY, CREATED_DATE, LAST_UPDATED_BY,
+			   LAST_UPDATED_DATE,
+			   LAST_LOGIN, LAST_PASSWORD_RESET_DATE
+		from sys_users
+		where EMAIL =
+			  #{email,jdbcType=VARCHAR}
+		  and ENABLED = 1
+			limit 1
+	</select>
+	<select id="findRolesByUserId" parameterType="java.lang.Long"
+		resultMap="RoleMap">
+		select roles.ROLE_ID, roles.ROLE_NAME, roles.ROLE_DESC,
+		roles.ENABLED,
+		roles.CREATED_BY, roles.CREATED_DATE,
+		roles.LAST_UPDATED_BY,
+		roles.LAST_UPDATED_DATE
+		from sys_roles roles,
+		sys_users_roles users
+		where users.USER_ID = #{userId,jdbcType=BIGINT}
+		and roles.ROLE_ID = users.ROLE_ID
+		and roles.ENABLED = 1
+		and
+		users.ENABLED = 1
+	</select>
+	<select id="findRoleIdsByUserId" parameterType="java.lang.Long"
+		resultType="java.lang.Long">
+		select roles.ROLE_ID from sys_roles roles, sys_users_roles
+		users
+		where users.USER_ID = #{userId,jdbcType=BIGINT}
+		and roles.ROLE_ID
+		= users.ROLE_ID
+		and roles.ENABLED = 1
+		and users.ENABLED = 1
+	</select>
+	<insert id="insertUserRoles" useGeneratedKeys="true"
+		parameterType="java.util.List">
+		insert into sys_users_roles
+		(ROLE_ID,USER_ID,CREATED_BY,LAST_UPDATED_BY)
+		values
+		<foreach collection="roles" item="item" index="index"
+			separator=",">
+			(#{item.roleId},#{userId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT},#{userId,jdbcType=BIGINT})
+		</foreach>
+	</insert>
+
+	<select id="getUserList" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select * from sys_users
+		where 1=1
+		<if test="username!=null">
+			and username like "%" #{username,jdbcType=VARCHAR}"%"
+		</if>
+		order by CREATED_DATE DESC
+
+		limit #{pstart},#{pageSize}
+	</select>
+
+	<select id="countByUsername" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select count(*) from sys_users
+		where 1=1
+		<if test="_parameter!=null">
+			and username like "%" #{username,jdbcType=VARCHAR}"%"
+		</if>
+
+	</select>
+
+	<delete id="deleteUserRoleByUserId"
+		parameterType="java.util.Map">
+		delete from sys_users_roles
+		where ID > 0 and USER_ID = #{userId,jdbcType=BIGINT} and ROLE_ID in
+		<foreach collection="roleIds" item="item" index="index"
+			open="(" separator="," close=")">
+			#{item}
+		</foreach>
+
+	</delete>
+
+	<insert id="insertUserRoleByUserId"
+		parameterType="java.util.Map">
+		insert into sys_users_roles (ROLE_ID,USER_ID)
+		values
+		<foreach collection="roleIds" item="item" index="index"
+			separator=",">
+			(
+			#{item},
+			#{userId,jdbcType=BIGINT}
+			)
+		</foreach>
+
+	</insert>
+
+
+	<select id="getUserById" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select * from sys_users
+		where 1=1
+		<if test="_parameter!=null">
+			and USER_ID = #{userId,jdbcType=BIGINT}
+		</if>
+	</select>
+
+	<select id="getAdminRole" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		select count(*) from  sys_users_roles where user_id=#{userId} and role_id=2
+	</select>
+</mapper>

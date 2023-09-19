@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.materials.gpt.mapper.RoleMapper">
+	<resultMap id="BaseResultMap"
+		type="com.materials.gpt.entity.Role">
+		<id column="ROLE_ID" jdbcType="BIGINT" property="roleId" />
+		<result column="ROLE_NAME" jdbcType="VARCHAR"
+			property="roleName" />
+		<result column="ROLE_DESC" jdbcType="VARCHAR"
+			property="roleDesc" />
+		<result column="ENABLED" jdbcType="TINYINT" property="enabled" />
+		<result column="CREATED_BY" jdbcType="BIGINT"
+			property="createdBy" />
+		<result column="CREATED_DATE" jdbcType="TIMESTAMP"
+			property="createdDate" />
+		<result column="LAST_UPDATED_BY" jdbcType="BIGINT"
+			property="lastUpdatedBy" />
+		<result column="LAST_UPDATED_DATE" jdbcType="TIMESTAMP"
+			property="lastUpdatedDate" />
+	</resultMap>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from sys_roles
+		where ROLE_ID = #{roleId,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert"
+		parameterType="com.materials.gpt.entity.Role">
+		<selectKey keyProperty="roleId" order="AFTER"
+			resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into sys_roles (ROLE_NAME, ROLE_DESC, ENABLED,
+		CREATED_BY, CREATED_DATE, LAST_UPDATED_BY,
+		LAST_UPDATED_DATE)
+		values (#{roleName,jdbcType=VARCHAR}, #{roleDesc,jdbcType=VARCHAR},
+		#{enabled,jdbcType=TINYINT},
+		#{createdBy,jdbcType=BIGINT}, #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=BIGINT},
+		#{lastUpdatedDate,jdbcType=TIMESTAMP})
+	</insert>
+	<update id="updateByPrimaryKey"
+		parameterType="com.materials.gpt.entity.Role">
+		update sys_roles
+		set ROLE_NAME = #{roleName,jdbcType=VARCHAR},
+		ROLE_DESC = #{roleDesc,jdbcType=VARCHAR},
+		ENABLED = #{enabled,jdbcType=TINYINT},
+		CREATED_BY = #{createdBy,jdbcType=BIGINT},
+		CREATED_DATE = #{createdDate,jdbcType=TIMESTAMP},
+		LAST_UPDATED_BY = #{lastUpdatedBy,jdbcType=BIGINT},
+		LAST_UPDATED_DATE = #{lastUpdatedDate,jdbcType=TIMESTAMP}
+		where ROLE_ID = #{roleId,jdbcType=BIGINT}
+	</update>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select ROLE_ID, ROLE_NAME, ROLE_DESC, ENABLED, CREATED_BY, CREATED_DATE,
+		LAST_UPDATED_BY,
+		LAST_UPDATED_DATE
+		from sys_roles
+		where ROLE_ID = #{roleId,jdbcType=BIGINT}
+		and ENABLED = 1
+		limit 1
+	</select>
+
+	<select id="getAllRole" resultMap="BaseResultMap">
+		select * from sys_roles
+		where ENABLED = 1
+	</select>
+</mapper>
